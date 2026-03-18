@@ -41,14 +41,6 @@ def init_db():
     from models.user import Base
     Base.metadata.create_all(bind=engine)
     """
-    FastAPI dependency that provides a database session.
-    Each request gets a fresh session, automatically closed after the request.
-    
-    Usage:
-        @app.get("/users")
-        async def read_users(db: Session = Depends(get_db)):
-            return db.query(User).all()
-    """
     db = SessionLocal()
     try:
         yield db

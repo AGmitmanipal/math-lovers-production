@@ -59,8 +59,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     db_user = User(
         username=user_data.username,
         email=user_data.email,
-        hashed_password=hashed_password,
-        reputation_score=0,  # New users start with 0 reputation
+        hashed_password=hashed_password
     )
     
     db.add(db_user)

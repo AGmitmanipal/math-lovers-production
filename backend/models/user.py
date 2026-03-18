@@ -18,7 +18,6 @@ class User(Base):
         username: Unique username for the platform
         email: Unique email address
         hashed_password: Bcrypt-hashed password (never store plaintext)
-        reputation_score: Integer representing math problem-solving points
         created_at: Timestamp when the user was created
     """
     __tablename__ = "users"
@@ -27,5 +26,4 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    reputation_score = Column(Integer, default=0, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

@@ -1,11 +1,11 @@
 """
 Math Lovers Community Platform - Backend API
-FastAPI application with JWT authentication and protected routes.
+FastAPI application with JWT authentication.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import init_db
-from routers import auth, challenges
+from routers import auth
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -34,7 +34,6 @@ async def startup_event():
 
 # Include routers for modular endpoint organization
 app.include_router(auth.router)
-app.include_router(challenges.router)
 
 
 @app.get("/")

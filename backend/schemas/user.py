@@ -25,7 +25,6 @@ class UserResponse(BaseModel):
     id: int
     username: str
     email: str
-    reputation_score: int
     created_at: datetime
 
     class Config:

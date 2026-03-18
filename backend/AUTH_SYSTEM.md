@@ -25,7 +25,7 @@ This is a production-ready JWT-based authentication system for the Math Lovers c
 │   └── user.py            # Pydantic validation schemas
 ├── routers/
 │   ├── auth.py            # Authentication endpoints
-│   └── challenges.py      # Protected route examples
+│   └── ai_agent_layer.py  # AI agent integration endpoints
 └── .env                   # Environment configuration
 ```
 
@@ -73,7 +73,6 @@ Register a new user.
   "id": 1,
   "username": "mathwiz123",
   "email": "user@example.com",
-  "reputation_score": 0,
   "created_at": "2026-03-18T10:30:00"
 }
 ```
@@ -106,26 +105,17 @@ Login and receive tokens.
 
 ### Protected Routes
 
-#### GET `/api/challenges/daily-theorem`
-Get today's math challenge (protected).
+Protected routes are implemented using the `get_current_user` dependency. Example:
+
+```python
+@router.get("/protected-endpoint")
+async def protected_route(current_user = Depends(get_current_user)):
+    return {"message": f"Hello {current_user.username}"}
+```
 
 **Headers:**
 ```
 Authorization: Bearer <access_token>
-```
-
-**Response (200 OK):**
-```json
-{
-  "theorem": "Pythagorean Theorem: a² + b² = c²",
-  "hint": "In a right triangle...",
-  "difficulty": "beginner",
-  "user_info": {
-    "username": "mathwiz123",
-    "email": "user@example.com",
-    "reputation_score": 0
-  }
-}
 ```
 
 ---
@@ -146,7 +136,7 @@ POST /api/auth/login
 ### 2. **Token Verification (Protected Route)**
 ```python
 # Client sends request with token
-GET /api/challenges/daily-theorem
+GET /api/protected-endpoint
 Authorization: Bearer <token>
 │
 ├─ HTTPBearer extracts token from Authorization header
@@ -161,8 +151,8 @@ Authorization: Bearer <token>
 
 ### 3. **Dependency Injection in Routes**
 ```python
-@router.get("/daily-theorem")
-async def get_daily_theorem(current_user = Depends(get_current_user)):
+@router.get("/protected-endpoint")
+async def protected_route(current_user = Depends(get_current_user)):
     # current_user is automatically validated User object
     return {"user": current_user.username}
 ```
@@ -231,12 +221,6 @@ curl -X POST "http://localhost:8000/api/auth/login" \
 
 Copy the `access_token` from response.
 
-### 3. Access Protected Route
-```bash
-curl -X GET "http://localhost:8000/api/challenges/daily-theorem" \
-  -H "Authorization: Bearer <access_token>"
-```
-
 ## Security Best Practices
 
 ✅ **Implemented:**
@@ -270,7 +254,6 @@ CREATE TABLE users (
   username VARCHAR UNIQUE NOT NULL,
   email VARCHAR UNIQUE NOT NULL,
   hashed_password VARCHAR NOT NULL,
-  reputation_score INTEGER DEFAULT 0,
   created_at DATETIME DEFAULT NOW()
 );
 ```
